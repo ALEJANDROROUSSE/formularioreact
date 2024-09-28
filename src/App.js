@@ -1,31 +1,40 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
+import './App.css'; // Archivo para tus estilos personalizados
 
-function App() {
+const App = () => {
   const [formData, setFormData] = useState({
-    matricula: '',
+    documento: '',
     nombre: '',
     apellidoPaterno: '',
     telefono: '',
     correo: ''
   });
 
-  const [estudiantes, setEstudiantes] = useState([]);
+  const [registros, setRegistros] = useState([]);
+  const [editingIndex, setEditingIndex] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setEstudiantes([...estudiantes, formData]);
+    if (editingIndex !== null) {
+      const updatedRegistros = registros.map((registro, index) =>
+        index === editingIndex ? formData : registro
+      );
+      setRegistros(updatedRegistros);
+      setEditingIndex(null);
+    } else {
+      setRegistros([...registros, formData]);
+    }
     setFormData({
-      matricula: '',
+      documento: '',
       nombre: '',
       apellidoPaterno: '',
       telefono: '',
@@ -33,99 +42,129 @@ function App() {
     });
   };
 
-  const handleReset = () => {
-    setFormData({
-      matricula: '',
-      nombre: '',
-      apellidoPaterno: '',
-      telefono: '',
-      correo: ''
-    });
-    setEstudiantes([]);
+  const handleEdit = (index) => {
+    setFormData(registros[index]);
+    setEditingIndex(index);
+  };
+
+  const handleDelete = (index) => {
+    const updatedRegistros = registros.filter((_, i) => i !== index);
+    setRegistros(updatedRegistros);
   };
 
   return (
-    <div className="container d-flex flex-column justify-content-center align-items-center min-vh-100">
-      <div className="card p-4" style={{ width: '400px' }}>
-        <h2 className="text-center mb-4">Formulario Registro</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label htmlFor="matricula" className="form-label">Matrícula</label>
-            <input
-              type="text"
-              className="form-control"
-              id="matricula"
-              name="matricula"
-              value={formData.matricula}
-              onChange={handleChange}
-              required
-            />
+    <div className="container my-5 p-4">
+      <div className="bg-light p-5 rounded shadow-lg form-container">
+        <h2 className="mb-4 text-primary text-center">Registro de Estudiantes</h2>
+        <div className="row">
+          {/* Formulario */}
+          <div className="col-md-6">
+            <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow-sm">
+              <div className="form-group mb-3">
+                <label className="form-label">Documento</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="documento"
+                  value={formData.documento}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group mb-3">
+                <label className="form-label">Nombre</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="nombre"
+                  value={formData.nombre}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group mb-3">
+                <label className="form-label">Apellido Paterno</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="apellidoPaterno"
+                  value={formData.apellidoPaterno}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group mb-3">
+                <label className="form-label">Teléfono</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="telefono"
+                  value={formData.telefono}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group mb-3">
+                <label className="form-label">Correo</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  name="correo"
+                  value={formData.correo}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <button type="submit" className="btn btn-primary mt-3 w-100">
+                {editingIndex !== null ? 'Actualizar' : 'Registrar'}
+              </button>
+            </form>
           </div>
-          <div className="mb-3">
-            <label htmlFor="nombre" className="form-label">Nombre</label>
-            <input
-              type="text"
-              className="form-control"
-              id="nombre"
-              name="nombre"
-              value={formData.nombre}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="apellidoPaterno" className="form-label">Apellido Paterno</label>
-            <input
-              type="text"
-              className="form-control"
-              id="apellidoPaterno"
-              name="apellidoPaterno"
-              value={formData.apellidoPaterno}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="telefono" className="form-label">Teléfono</label>
-            <input
-              type="tel"
-              className="form-control"
-              id="telefono"
-              name="telefono"
-              value={formData.telefono}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="correo" className="form-label">Correo</label>
-            <input
-              type="email"
-              className="form-control"
-              id="correo"
-              name="correo"
-              value={formData.correo}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <button type="submit" className="btn btn-primary w-100">Registrar</button>
-        </form>
-        <button className="btn btn-danger w-100 mt-3" onClick={handleReset}>Reiniciar</button>
-      </div>
 
-      <div className="mt-4">
-        <h4>Estudiantes Registrados</h4>
-        <ul className="list-group">
-          {estudiantes.map((estudiante, index) => (
-            <li key={index} className="list-group-item">
-              {estudiante.nombre} {estudiante.apellidoPaterno} - {estudiante.correo}
-            </li>
-          ))}
-        </ul>
+          {/* Tabla de Registros */}
+          <div className="col-md-6">
+            <table className="table table-striped table-bordered shadow-sm bg-white mt-4">
+              <thead className="table-primary">
+                <tr>
+                  <th>Documento</th>
+                  <th>Nombre</th>
+                  <th>Apellido Paterno</th>
+                  <th>Teléfono</th>
+                  <th>Correo</th>
+                  <th>Opciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {registros.map((registro, index) => (
+                  <tr key={index}>
+                    <td>{registro.documento}</td>
+                    <td>{registro.nombre}</td>
+                    <td>{registro.apellidoPaterno}</td>
+                    <td>{registro.telefono}</td>
+                    <td>{registro.correo}</td>
+                    <td>
+                      <button
+                        className="btn btn-warning btn-sm me-2"
+                        onClick={() => handleEdit(index)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => handleDelete(index)}
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default App;

@@ -1,11 +1,27 @@
+/* App.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
 body {
-  background-color: #f8f9fa; /* Color de fondo suave */
+  background-color: #f0f2f5;
+  font-family: 'Poppins', sans-serif; /* Aplica la fuente Poppins a todo el cuerpo */
 }
 
-.card {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra de la tarjeta */
+.container {
+  max-width: 100%; /* Elimina el límite del ancho */
+}
+
+.form-container {
+  background-color: #f8f9fa;
+  padding: 50px; /* Aumenta el padding para hacerlo más grande */
+  border-radius: 15px;
+  width: 98.5%; /* Ancho mayor para abarcar más espacio */
+  margin: 0 auto; /* Centra el contenedor */
 }
 
 h2 {
-  color: #007bff; /* Color del título */
+  color: #007bff;
+}
+
+.table {
+  width: 100%; /* Asegura que la tabla ocupe todo el espacio disponible */
 }
